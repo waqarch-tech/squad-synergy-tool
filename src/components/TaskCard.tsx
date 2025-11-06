@@ -72,10 +72,12 @@ export const TaskCard = ({ task, onStatusChange, onDelete, onEdit }: TaskCardPro
       <CardContent>
         <CardDescription className="line-clamp-2 mb-4">{task.description}</CardDescription>
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <User className="h-4 w-4" />
-            <span>{task.assignee}</span>
-          </div>
+          {task.assignee && (
+            <div className="flex items-center gap-1">
+              <User className="h-4 w-4" />
+              <span>Assigned</span>
+            </div>
+          )}
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
             <span>{new Date(task.createdAt).toLocaleDateString()}</span>

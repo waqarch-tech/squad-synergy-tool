@@ -18,15 +18,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
+
+interface Profile {
+  id: string;
+  email: string;
+}
 
 interface TaskDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void;
   task?: Task | null;
+  profiles?: Profile[];
+  userRole?: 'admin' | 'member' | null;
 }
 
-export const TaskDialog = ({ open, onOpenChange, onSave, task }: TaskDialogProps) => {
+export const TaskDialog = ({ open, onOpenChange, onSave, task, profiles = [], userRole }: TaskDialogProps) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<TaskStatus>("todo");
@@ -51,6 +59,12 @@ export const TaskDialog = ({ open, onOpenChange, onSave, task }: TaskDialogProps
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    
     onSave({
       title,
       description,
@@ -120,16 +134,24 @@ export const TaskDialog = ({ open, onOpenChange, onSave, task }: TaskDialogProps
               </Select>
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="assignee">Assignee</Label>
-            <Input
-              id="assignee"
-              value={assignee}
-              onChange={(e) => setAssignee(e.target.value)}
-              placeholder="Enter assignee name"
-              required
-            />
-          </div>
+          {userRole === 'admin' && (
+            <div className="space-y-2">
+              <Label htmlFor="assignee">Assignee</Label>
+              <Select value={assignee} onValueChange={setAssignee}>
+                <SelectTrigger id="assignee">
+                  <SelectValue placeholder="Select assignee" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Unassigned</SelectItem>
+                  {profiles.map((profile) => (
+                    <SelectItem key={profile.id} value={profile.id}>
+                      {profile.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
