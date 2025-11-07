@@ -60,7 +60,9 @@ const Dashboard = () => {
         updatedAt: new Date(task.updated_at)
       })));
     } catch (error: any) {
-      console.error('Error fetching tasks:', error);
+      if (import.meta.env.DEV) {
+        console.error('Error fetching tasks:', error);
+      }
       toast.error('Failed to load tasks');
     } finally {
       setLoading(false);
@@ -76,7 +78,9 @@ const Dashboard = () => {
       if (error) throw error;
       setProfiles(data || []);
     } catch (error) {
-      console.error('Error fetching profiles:', error);
+      if (import.meta.env.DEV) {
+        console.error('Error fetching profiles:', error);
+      }
     }
   };
 
@@ -117,7 +121,9 @@ const Dashboard = () => {
       if (error) throw error;
       toast.success("Task created successfully!");
     } catch (error: any) {
-      console.error('Error creating task:', error);
+      if (import.meta.env.DEV) {
+        console.error('Error creating task:', error);
+      }
       toast.error(error.message || 'Failed to create task');
     }
   };
@@ -141,7 +147,9 @@ const Dashboard = () => {
       setEditingTask(null);
       toast.success("Task updated successfully!");
     } catch (error: any) {
-      console.error('Error updating task:', error);
+      if (import.meta.env.DEV) {
+        console.error('Error updating task:', error);
+      }
       toast.error(error.message || 'Failed to update task');
     }
   };
@@ -156,7 +164,9 @@ const Dashboard = () => {
       if (error) throw error;
       toast.success("Task status updated!");
     } catch (error: any) {
-      console.error('Error updating status:', error);
+      if (import.meta.env.DEV) {
+        console.error('Error updating status:', error);
+      }
       toast.error(error.message || 'Failed to update status');
     }
   };
@@ -171,7 +181,9 @@ const Dashboard = () => {
       if (error) throw error;
       toast.success("Task deleted successfully!");
     } catch (error: any) {
-      console.error('Error deleting task:', error);
+      if (import.meta.env.DEV) {
+        console.error('Error deleting task:', error);
+      }
       toast.error(error.message || 'Failed to delete task');
     }
   };

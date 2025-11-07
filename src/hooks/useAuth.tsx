@@ -66,7 +66,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (error) throw error;
       setUserRole(data.role as 'admin' | 'member');
     } catch (error) {
-      console.error('Error fetching user role:', error);
+      if (import.meta.env.DEV) {
+        console.error('Error fetching user role:', error);
+      }
     }
   };
 
@@ -87,7 +89,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       toast.success('Account created successfully!');
       return { error: null };
     } catch (error: any) {
-      console.error('Sign up error:', error);
+      if (import.meta.env.DEV) {
+        console.error('Sign up error:', error);
+      }
       return { error };
     }
   };
@@ -105,7 +109,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       toast.success('Signed in successfully!');
       return { error: null };
     } catch (error: any) {
-      console.error('Sign in error:', error);
+      if (import.meta.env.DEV) {
+        console.error('Sign in error:', error);
+      }
       return { error };
     }
   };
@@ -117,7 +123,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       navigate('/auth');
       toast.success('Signed out successfully!');
     } catch (error) {
-      console.error('Sign out error:', error);
+      if (import.meta.env.DEV) {
+        console.error('Sign out error:', error);
+      }
       toast.error('Error signing out');
     }
   };
