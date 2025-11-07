@@ -19,6 +19,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const taskSchema = z.object({
+  title: z.string().trim()
+    .min(1, "Title is required")
+    .max(200, "Title must be less than 200 characters"),
+  description: z.string().trim()
+    .max(2000, "Description must be less than 2000 characters")
+});
 
 interface Profile {
   id: string;
@@ -60,19 +69,22 @@ export const TaskDialog = ({ open, onOpenChange, onSave, task, profiles = [], us
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title.trim()) {
-      toast.error("Title is required");
-      return;
+    try {
+      const validated = taskSchema.parse({ title, description });
+      
+      onSave({
+        title: validated.title,
+        description: validated.description,
+        status,
+        priority,
+        assignee,
+      });
+      onOpenChange(false);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+      }
     }
-    
-    onSave({
-      title,
-      description,
-      status,
-      priority,
-      assignee,
-    });
-    onOpenChange(false);
   };
 
   return (
@@ -92,6 +104,7 @@ export const TaskDialog = ({ open, onOpenChange, onSave, task, profiles = [], us
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter task title"
+              maxLength={200}
               required
             />
           </div>
@@ -103,6 +116,7 @@ export const TaskDialog = ({ open, onOpenChange, onSave, task, profiles = [], us
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter task description"
               rows={3}
+              maxLength={2000}
               required
             />
           </div>
