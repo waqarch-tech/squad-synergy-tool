@@ -48,7 +48,7 @@ export const TaskDialog = ({ open, onOpenChange, onSave, task, profiles = [], us
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<TaskStatus>("todo");
   const [priority, setPriority] = useState<TaskPriority>("medium");
-  const [assignee, setAssignee] = useState("");
+  const [assignee, setAssignee] = useState("unassigned");
 
   useEffect(() => {
     if (task) {
@@ -56,13 +56,13 @@ export const TaskDialog = ({ open, onOpenChange, onSave, task, profiles = [], us
       setDescription(task.description);
       setStatus(task.status);
       setPriority(task.priority);
-      setAssignee(task.assignee);
+      setAssignee(task.assignee || "unassigned");
     } else {
       setTitle("");
       setDescription("");
       setStatus("todo");
       setPriority("medium");
-      setAssignee("");
+      setAssignee("unassigned");
     }
   }, [task, open]);
 
@@ -77,7 +77,7 @@ export const TaskDialog = ({ open, onOpenChange, onSave, task, profiles = [], us
         description: validated.description,
         status,
         priority,
-        assignee,
+        assignee: assignee === "unassigned" ? "" : assignee,
       });
       onOpenChange(false);
     } catch (error) {
@@ -156,7 +156,7 @@ export const TaskDialog = ({ open, onOpenChange, onSave, task, profiles = [], us
                   <SelectValue placeholder="Select assignee" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Unassigned</SelectItem>
+                  <SelectItem value="unassigned">Unassigned</SelectItem>
                   {profiles.map((profile) => (
                     <SelectItem key={profile.id} value={profile.id}>
                       {profile.email}
